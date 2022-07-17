@@ -2,6 +2,7 @@ import { StyleSheet, Dimensions, Platform } from 'react-native';
 import Constants from 'expo-constants';
 import { Device, Fonts } from '../utils/Common.js';
 
+export * from './LoadingStyles.js';
 /*export * from './CalendarStyles.js';
 export * from './ClientStyles.js';
 export * from './ContactPopupStyles.js';

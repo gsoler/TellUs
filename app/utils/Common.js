@@ -1,5 +1,5 @@
 // import { StackActions, NavigationActions } from 'react-navigation';
-import uuidv4 from 'uuid/v4';
+import { v4 as uuidv4 } from 'uuid';
 
 export async function navigate(context, newScreen, params, force) {
   /*const currentScreen = context.props.navigation.state.routeName;

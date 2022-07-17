@@ -1,0 +1,29 @@
+{
+  "cli": {
+    "version": ">= 0.47.0"
+  },
+  "build": {
+    "prod": {
+      "releaseChannel": "production",
+      "env": {
+        "BASE_URL": "https://www.irsync.es/",
+        "analytics": "true"
+      }
+    },
+    "dev": {
+      "releaseChannel": "dev",
+      "android": {
+        "buildType": "apk"
+      },
+      "developmentClient": true,
+      "distribution": "internal",
+      "env": {
+        "BASE_URL": "http://192.168.1.150:7080/",
+        "analytics": "false"
+      }
+    },
+    "submit": {
+      "production": {}
+    }
+  }
+}

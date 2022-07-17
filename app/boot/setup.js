@@ -1,25 +1,22 @@
-/* import AppLoading from 'expo-app-loading';
 import * as Localization from 'expo-localization';
 import * as SplashScreen from 'expo-splash-screen';
-import React, { useState, useEffect } from 'react';
-import { Platform } from 'react-native';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { NavigationContainer } from '@react-navigation/native';
 import { StatusBar } from 'expo-status-bar';
-import { switchLanguage, loadLocaleData, readLastLanguage } from 'muba-i18n';
 import { useFonts } from 'expo-font';
+import React, { useState, useEffect } from 'react';
+import { Platform, View } from 'react-native';
+import { NavigationContainer } from '@react-navigation/native';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { switchLanguage, loadLocaleData, readLastLanguage } from '../locales/I18n';
 import Home from '../views/Home';
 import Settings from '../views/Settings';
 import { createIconSetFromFontello } from 'react-native-vector-icons';
-import fontelloConfig from '../assets/fonts/config.json'; */
+import fontelloConfig from '../assets/fonts/config.json';
 
-import { Text, View } from 'react-native';
-
-/* SplashScreen.preventAutoHideAsync();
-const Tab = createBottomTabNavigator(); */
+SplashScreen.preventAutoHideAsync();
+const Tab = createBottomTabNavigator();
 
 export default function Setup() {
-  /* const [isLocaleLoaded, setLocaleLoaded] = useState(false);
+  const [isLocaleLoaded, setLocaleLoaded] = useState(false);
 
   const [fontsLoaded] = useFonts({
     PoppinsBold: require('../assets/fonts/Poppins/Poppins-Bold.ttf'),
@@ -34,10 +31,13 @@ export default function Setup() {
 
   useEffect(() => {
     loadAppConfig(setLocaleLoaded);
+    if (fontsLoaded && isLocaleLoaded) {
+      SplashScreen.hideAsync();
+    }
   })
 
   if (!fontsLoaded || !isLocaleLoaded) {
-    return <AppLoading />;
+    return <View />
   } else {
     return (
       <NavigationContainer>
@@ -47,10 +47,7 @@ export default function Setup() {
         </Tab.Navigator>
       </NavigationContainer>
     );
-  } */
-  return <View>
-  <Text>Open up App.js to start working on your app!</Text>
-</View>
+  }
 }
 
 function renderIcon(name) {
@@ -62,26 +59,26 @@ function renderIcon(name) {
 
 async function loadAppConfig(setLocaleLoaded) {
   await loadLocale(setLocaleLoaded);
-  SplashScreen.hideAsync();
 }
 
 async function loadLocale(setLocaleLoaded) {
-  const defaultLocale = 'en';
+  const defaultLocale = 'en-US';
   let localeRegion = Localization.locale;
-  let locale = localeRegion.substring(0, 2);
-  const appLocales = ['en'];
+  let locale = localeRegion;
+  const appLocales = ['en-US', 'es-ES'];
 
   if (!appLocales.includes(locale)) {
     locale = defaultLocale;
   }
 
   loadLocaleData({
-    en: require('../locales/en.json')
+    'en-US': require('../locales/en-US.json'),
+    'es-ES': require('../locales/es-ES.json')
   })
 
   readLastLanguage().then((lastLanguage) => {
-    if (lastLanguage === null) {
-      switchLanguage(locale.substring(0, 2), this);
+    if (lastLanguage === null || !appLocales.includes(lastLanguage)) {
+      switchLanguage(locale, this);
     } else {
       switchLanguage(lastLanguage, this);
     }

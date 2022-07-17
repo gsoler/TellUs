@@ -1,9 +1,9 @@
 import 'react-native-gesture-handler';
-import React from "react";
+import React from 'react';
 import { commonStyles } from './app/styles/commonStyles';
 import { StatusBar } from 'expo-status-bar';
-import { View } from "react-native";
-import Setup from "./app/boot/setup";
+import { View } from 'react-native';
+import Setup from './app/boot/setup';
 import { Provider } from 'react-redux';
 import { configureStore } from '@reduxjs/toolkit';
 import reducers from './app/reducers';
@@ -16,8 +16,8 @@ export default function App() {
     <Provider store={store}>
       <View style={[commonStyles.flex1]}>
         <StatusBar
-          barStyle="light-content"
-          backgroundColor="transparent"
+          barStyle='light-content'
+          backgroundColor='transparent'
         />
         <Setup />
       </View>
