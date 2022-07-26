@@ -2,33 +2,45 @@
   "expo": {
     "name": "TellUs",
     "slug": "TellUs",
+    "scheme": "tellus",
     "version": "1.0.0",
+    "privacy": "public",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./app/assets/images/icon.png",
     "userInterfaceStyle": "light",
-    "splash": {
-      "image": "./assets/splash.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
-    },
-    "updates": {
-      "fallbackToCacheTimeout": 0
-    },
+    "updates": {},
     "assetBundlePatterns": [
-      "**/*"
+      "app/assets/"
     ],
     "ios": {
-      "supportsTablet": true
-    },
-    "android": {
-      "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#FFFFFF"
+      "bundleIdentifier": "com.tellus",
+      "buildNumber": "1",
+      "splash": {
+        "resizeMode": "contain",
+        "image": "./app/assets/splash/ios/Default-iphone.png",
+        "backgroundColor": "#eff0f1"
       }
     },
-    "web": {
-      "favicon": "./assets/favicon.png"
+    "android": {
+      "package": "com.tellus",
+      "versionCode": 1,
+      "permissions": [
+        "ACCESS_COARSE_LOCATION",
+        "ACCESS_FINE_LOCATION",
+        "FOREGROUND_SERVICE"
+      ],
+      "splash": {
+        "resizeMode": "native",
+        "backgroundColor": "#eff0f1",
+        "ldpi": "./app/assets/splash/android/drawable-port-lpi-screen.png",
+        "mdpi": "./app/assets/splash/android/drawable-port-mdpi-screen.png",
+        "hdpi": "./app/assets/splash/android/drawable-port-hdpi-screen.png",
+        "xhdpi": "./app/assets/splash/android/drawable-port-xhdpi-screen.png",
+        "xxhdpi": "./app/assets/splash/android/drawable-port-xxhdpi-screen.png",
+        "xxxhdpi": "./app/assets/splash/android/drawable-port-xxxhdpi-screen.png"
+      }
     },
+    "web": {},
     "extra": {
       "ENVIRONMENT": "dev"
     }

@@ -29,7 +29,9 @@ export default function Home() {
 }
 
 async function loadData(setLoading) {
+  const init = new Date();
   console.log('response', await request(this, GET_RESTAURANTS));
+  console.log((new Date().getTime() - init.getTime()) / 1000)
   setTimeout(function () {
     setLoading(false);
   }, 1000)
