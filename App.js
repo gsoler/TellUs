@@ -7,6 +7,7 @@ import Setup from './app/boot/setup';
 import { Provider } from 'react-redux';
 import { configureStore } from '@reduxjs/toolkit';
 import reducers from './app/reducers';
+import 'react-native-get-random-values';
 
 const store = configureStore(reducers);
 
