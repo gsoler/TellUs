@@ -1,9 +1,10 @@
 import { I18nManager } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import i18n from 'i18n-js';
+import { I18n } from "i18n-js";
 import { reloadAsync } from 'expo-updates';
 
 const LANGUAGE = 'language';
+const i18n = new I18n({});
 
 export function strings(name, params = {}) {
   return i18n.t(name, params);
@@ -22,11 +23,11 @@ export function loadLocaleData(locales) {
 }
 
 export function currentLocale() {
-  return i18n.currentLocale();
+  return i18n.locale;
 }
 
 export function isRTL() {
-  return i18n.currentLocale() === 'ar';
+  return i18n.locale === 'ar';
 }
 
 export function switchLanguage(lang, restart = true) {
