@@ -1,36 +1,44 @@
-// import { StackActions, NavigationActions } from 'react-navigation';
+import { CommonActions, StackActions } from '@react-navigation/native';
 import { v4 as uuidv4 } from 'uuid';
 
-export async function navigate(context, newScreen, params, force) {
-  /*const currentScreen = context.props.navigation.state.routeName;
-  context.props.navigation.dispatch(DrawerActions.closeDrawer());
+export async function navigate(navigation, newScreen, params, force) {
+  const currentRouteIndex = navigation.getState()?.index;
+  const currentScreen = navigation.getState()?.routes[currentRouteIndex].name;
   if (currentScreen !== newScreen || force) {
-    const navigation = { routeName: newScreen, params: params != null ? params : {} }
+    const navigationParams = { name: newScreen, params: params != null ? params : {} }
     if (force) {
-      navigation['key'] = uuidv4();
+      result['key'] = uuidv4();
     }
 
-    context.props.navigation.navigate(navigation);
-  }*/
+    navigation.dispatch(CommonActions.navigate(navigationParams));
+  }
 }
 
-export async function popToTop(context) {
-  /*context.props.navigation.dispatch(DrawerActions.closeDrawer());
-  if (context.props.navigation.state.routeName !== 'Home') {
-    const resetAction = StackActions.reset({
+export async function popToTop(navigation) {
+  const currentRouteIndex = navigation.getState()?.index;
+  const currentScreen = navigation.getState()?.routes[currentRouteIndex].name;
+  if (currentScreen !== Views.HOME) {
+    const resetAction = CommonActions.reset({
       index: 0,
-      actions: [
-        NavigationActions.navigate({ routeName: 'Home' }),
+      routes: [
+        { name: Views.HOME }
       ],
     });
-    context.props.navigation.dispatch(resetAction);
-    context.props.navigation.dispatch(DrawerActions.closeDrawer());
-  }*/
+    navigation.dispatch(resetAction);
+  }
 }
 
-export async function goBack(context) {
-  /*context.props.navigation.dispatch(DrawerActions.closeDrawer());
-  context.props.navigation.goBack();*/
+export async function replace(navigation, newScreen, params) {
+  const currentRouteIndex = navigation.getState()?.index;
+  const currentScreen = navigation.getState()?.routes[currentRouteIndex].name;
+  if (currentScreen !== newScreen) {
+    const navigationParams = { name: newScreen, params: params != null ? params : {} }
+    navigation.dispatch(StackActions.replace(navigationParams.name, navigationParams.params));
+  }
+}
+
+export async function goBack(navigation) {
+  navigation.goBack();
 }
 
 export const Device = {

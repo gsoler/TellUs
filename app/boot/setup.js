@@ -1,3 +1,4 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Localization from 'expo-localization';
 import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
@@ -5,18 +6,21 @@ import { useFonts } from 'expo-font';
 import React, { useState, useEffect } from 'react';
 import { Platform, View } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { createStackNavigator } from '@react-navigation/stack';
+import LoginStack from './loginStack';
+import MainStack from './mainStack';
+import { addFontList } from 'muba-font';
 import { switchLanguage, loadLocaleData, readLastLanguage } from '../locales/I18n';
-import Home from '../views/Home';
-import Settings from '../views/Settings';
+import { Views } from '../utils/Views';
 import { createIconSetFromFontello } from 'react-native-vector-icons';
 import fontelloConfig from '../assets/fonts/config.json';
 
 SplashScreen.preventAutoHideAsync();
-const Tab = createBottomTabNavigator();
+const Stack = createStackNavigator();
 
 export default function Setup() {
   const [isLocaleLoaded, setLocaleLoaded] = useState(false);
+  const [isLoggedIn, setLoggedIn] = useState(false);
 
   const [fontsLoaded] = useFonts({
     PoppinsBold: require('../assets/fonts/Poppins/Poppins-Bold.ttf'),
@@ -30,7 +34,7 @@ export default function Setup() {
     : 0;
 
   useEffect(() => {
-    loadAppConfig(setLocaleLoaded);
+    loadAppConfig(setLocaleLoaded, setLoggedIn);
     if (fontsLoaded && isLocaleLoaded) {
       SplashScreen.hideAsync();
     }
@@ -39,14 +43,24 @@ export default function Setup() {
   if (!fontsLoaded || !isLocaleLoaded) {
     return <View />
   } else {
-    return (
-      <NavigationContainer>
-        <Tab.Navigator initialRouteName='Home' screenOptions={{ unmountOnBlur: true, headerShown: false, tabBarItemStyle: { padding: 8 }, tabBarStyle: { height: 60 } }} sceneContainerStyle={{ marginTop: statusBarHeight }}>
-          <Tab.Screen name="Home" component={Home} options={{ tabBarIcon: renderIcon('th-list') }} />
-          <Tab.Screen name="Settings" component={Settings} options={{ tabBarIcon: renderIcon('cog') }} />
-        </Tab.Navigator>
-      </NavigationContainer>
-    );
+    return <NavigationContainer>
+      <Stack.Navigator
+        initialRouteName={isLoggedIn ? Views.MAIN_STACK : Views.LOGIN_STACK}
+        screenListeners={(navigation) => AsyncStorage.setItem('currentScreen', JSON.stringify(navigation.route))}
+        screenOptions={{
+          mode: 'modal',
+          headerMode: 'none',
+          presentation: 'transparentModal',
+          transitionConfig: ({ scene }) => ({
+            screenInterpolator: screenProps => {
+              return {}
+            }
+          })
+        }}>
+        <Stack.Screen name={Views.LOGIN_STACK} component={LoginStack} />
+        <Stack.Screen name={Views.MAIN_STACK} component={MainStack} />
+      </Stack.Navigator>
+    </NavigationContainer>
   }
 }
 
@@ -57,8 +71,35 @@ function renderIcon(name) {
   );
 }
 
-async function loadAppConfig(setLocaleLoaded) {
+async function loadAppConfig(setLocaleLoaded, setLoggedIn) {
+  await loadFont();
   await loadLocale(setLocaleLoaded);
+  loadUserSession(setLoggedIn);
+}
+
+async function loadFont() {
+  await addFontList([
+    {
+      name: 'Poppins',
+      source: require('../assets/fonts/Poppins/Poppins-Regular.ttf')
+    },
+    {
+      name: 'PoppinsBold',
+      source: require('../assets/fonts/Poppins/Poppins-Bold.ttf')
+    },
+    {
+      name: 'PoppinsMedium',
+      source: require('../assets/fonts/Poppins/Poppins-Medium.ttf')
+    },
+    {
+      name: 'PoppinsSemiBold',
+      source: require('../assets/fonts/Poppins/Poppins-SemiBold.ttf')
+    },
+    {
+      name: 'FontAwesome',
+      source: require('../assets/fonts/Font-Awesome.ttf')
+    }
+  ]);
 }
 
 async function loadLocale(setLocaleLoaded) {
@@ -85,3 +126,13 @@ async function loadLocale(setLocaleLoaded) {
     setLocaleLoaded(true);
   });
 }
+
+loadUserSession = async (setLoggedIn) => {
+  const user = await AsyncStorage.getItem('user');
+
+  if (user !== undefined && user !== null && JSON.parse(user).email !== undefined && JSON.parse(user).email !== '') {
+    setLoggedIn(true);
+  } else {
+    setLoggedIn(false);
+  }
+};

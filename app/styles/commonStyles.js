@@ -3,24 +3,7 @@ import Constants from 'expo-constants';
 import { Device, Fonts } from '../utils/Common.js';
 
 export * from './LoadingStyles.js';
-/*export * from './CalendarStyles.js';
-export * from './ClientStyles.js';
-export * from './ContactPopupStyles.js';
-export * from './ContactsStyles.js';
-export * from './HomeStyles.js';
-export * from './InputPhoneStyles.js';
-export * from './InputSelectStyles.js';
-export * from './InstantSearchStyles.js';
 export * from './LoginStyles.js';
-export * from './MapStyles.js';
-export * from './MyCalendarStyles.js';
-export * from './NotesStyles.js';
-export * from './OpportunitiesStyles.js';
-export * from './PopupStyles.js';
-export * from './PotentialsListStyles.js';
-export * from './RadioButtonGroupStyles.js';
-export * from './SalesTasksStyles.js';
-export * from './SettingsStyles.js';*/
 
 const window = Dimensions.get('window');
 
@@ -102,6 +85,10 @@ export const commonStyles = StyleSheet.create({
 
   popupBlueText: {
     color: '#00afca'
+  },
+
+  margTop: {
+    marginTop: 20
   },
 
   subNote: {

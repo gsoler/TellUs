@@ -2,5 +2,31 @@
   "loading": "Cargando",
   "home": {
     "welcome": "Hola! Esto es un Test."
+  },
+  "login": {
+    "welcome": "Bienvenido empleado,",
+    "signInContinue": "Inicia sesión para continuar",
+    "identityNumber": "Identificador",
+    "password": "Contraseña",
+    "register": "¿No estás registrado? Regístrate ahora",
+    "forgetPassword": "Has olvidado la Contraseña?",
+    "signIn": "Iniciar sesión",
+    "emailRequired": "El email no puede estar vacío",
+    "emailBadFormat": "Introduce una dirección de correo válida",
+    "passwordRequired": "La contraseña no puede estar vacía"
+  },
+  "register": {
+    "title": "Registrar empleado",
+    "firstName": "Nombre",
+    "lastName": "Apellidos",
+    "phone": "Número de teléfono",
+    "email": "Email",
+    "confirmPassword": "Confirmar contraseña",
+    "register": "Registrar",
+    "passwordLength": "Longitud entre 8 y 50 carácteres",
+    "passwordUppercase": "Debe contener al menos una mayúscula",
+    "passwordLowercase": "Debe contener al menos una minúscula",
+    "passwordNumeric": "Debe contener al menos un carácter numérico",
+    "passwordSpecialChar": "Debe contener al menos un símbolo (!?@.,-_<>+-*)"
   }
 }

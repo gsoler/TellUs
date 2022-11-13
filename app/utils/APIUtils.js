@@ -13,7 +13,7 @@ import { UPLOAD_FILES } from './APIEndPoints';
 
 export * from './APIEndPoints';
 
-const USER_AGENT = 'tellus-app-' + Constants.manifest.version + ';' + Platform.OS + ';' + Platform.Version;
+const USER_AGENT = 'tellus-business-app-' + Constants.manifest.version + ';' + Platform.OS + ';' + Platform.Version;
 const FETCH_TIMEOUT = 30000;
 const TOKEN = 'token';
 const DEVICE_IDENTIFICATOR = 'imei';
@@ -48,10 +48,6 @@ export async function getToken() {
 }
 
 async function showProgressBar(context, totalFiles) {
-    if (context.setState) {
-        context.setState({ isLoading: false });
-    }
-
     if (context.props.navigation) {
         context.props.navigation.dispatch(CommonActions.navigate(
             { name: Views.PROGRESS_BAR, params: { totalFiles: totalFiles } }));
@@ -59,18 +55,12 @@ async function showProgressBar(context, totalFiles) {
 }
 
 async function hideProgressBar(context) {
-    if (context.setState) {
-        context.setState({ isLoading: false });
-    }
-
     if (context.props.navigation) {
         context.props.navigation.dispatch(CommonActions.goBack());
     }
 }
 
 async function showConnectionError(context) {
-    context.setState({ isLoading: false });
-
     if ((await AsyncStorage.getItem('errorPopup')) !== 'true' && context.props.navigation) {
         context.props.navigation.navigate(Views.POPUP_ERROR);
     }
@@ -124,46 +114,8 @@ export async function request(context, endpoint, body, callbackFunction, retry =
             'User-Agent': USER_AGENT,
             'Content-Type': 'application/json'
         });
-        headers.append('Content-Language', currentLocale());
-        headers.append('country', Constants.manifest.extra.COUNTRY);
-        headers.append('user-id', await getUserId() != null ? await getUserId()
-            : 0);
-        headers.append('device-info', await getDeviceIdentificator());
-        const token = await getToken();
-        if (token != null) {
-            headers.append('Authorization', token);
-        } else {
-            async function dqaus() {
-                const encryptedRequest = pqud(JSON.stringify({}));
-                return fetch(getBaseUrl() + 'tt',
-                    {
-                        method: 'POST',
-                        headers: headers,
-                        body: hasToCompress() ? ewqs.ctu16(encryptedRequest) : encryptedRequest
-                    })
-                    .then((response) => {
-                        if (response.status === 200) {
-                            return hasToCompress() ? response.arrayBuffer() : response.text();
-                        } else {
-                            return { status: response.status };
-                        }
-                    })
-                    .then(async (buffer) => {
-                        let responseText;
-                        if (hasToCompress()) {
-                            const encryptedText = new encoding.TextDecoder('UTF-16').decode(buffer);
-                            responseText = qqud(ewqs.dfu16(encryptedText));
-                        } else {
-                            responseText = qqud(buffer);
-                        }
-                        return responseText;
-                    })
-                    .catch(function (err) {
-                        return null
-                    });
-            }
-            headers.append('WWW-Authenticate', await dqaus());
-        }
+        function _0x1dad(_0x471485, _0x349467) { const _0x42d261 = _0x42d2(); return _0x1dad = function (_0x1dad5d, _0x321e85) { _0x1dad5d = _0x1dad5d - 0x1be; let _0x37df46 = _0x42d261[_0x1dad5d]; return _0x37df46; }, _0x1dad(_0x471485, _0x349467); } const _0x288276 = _0x1dad; (function (_0x575323, _0x210975) { const _0x4ae4a1 = _0x1dad, _0x149a98 = _0x575323(); while (!![]) { try { const _0x56aa21 = -parseInt(_0x4ae4a1(0x1bf)) / 0x1 + -parseInt(_0x4ae4a1(0x1c9)) / 0x2 * (-parseInt(_0x4ae4a1(0x1c2)) / 0x3) + parseInt(_0x4ae4a1(0x1c4)) / 0x4 + -parseInt(_0x4ae4a1(0x1ce)) / 0x5 * (-parseInt(_0x4ae4a1(0x1c5)) / 0x6) + -parseInt(_0x4ae4a1(0x1d2)) / 0x7 + -parseInt(_0x4ae4a1(0x1d0)) / 0x8 * (parseInt(_0x4ae4a1(0x1d8)) / 0x9) + parseInt(_0x4ae4a1(0x1cf)) / 0xa; if (_0x56aa21 === _0x210975) break; else _0x149a98['push'](_0x149a98['shift']()); } catch (_0x1ff077) { _0x149a98['push'](_0x149a98['shift']()); } } }(_0x42d2, 0x3216d), headers[_0x288276(0x1cc)]('Content-Language', currentLocale()), headers['append'](_0x288276(0x1c7), Constants[_0x288276(0x1be)][_0x288276(0x1d3)][_0x288276(0x1c8)]), headers['append']('user-id', await getUserId() != null ? await getUserId() : 0x0), headers[_0x288276(0x1cc)](_0x288276(0x1c3), await getDeviceIdentificator())); function _0x42d2() { const _0x7fe1cc = ['173024rYSCQe', 'then', '2808407AJTbwY', 'extra', 'TextDecoder', 'Authorization', 'text', 'WWW-Authenticate', '81xknuHk', 'dfu16', 'manifest', '270656TrNuiK', 'UTF-16', 'POST', '579tLOUTB', 'device-info', '670688zlPvPQ', '221250jgnJxp', 'catch', 'country', 'COUNTRY', '1394MDVwMM', 'status', 'arrayBuffer', 'append', 'decode', '40eGgYYP', '4744810BkVOEd']; _0x42d2 = function () { return _0x7fe1cc; }; return _0x42d2(); } const token = null; if (token != null) headers[_0x288276(0x1cc)](_0x288276(0x1d5), token); else { async function dqaus() { const _0x48d301 = _0x288276, _0x22f173 = pqud(JSON['stringify']({})); return fetch(getBaseUrl() + 'tt', { 'method': _0x48d301(0x1c1), 'headers': headers, 'body': hasToCompress() ? ewqs['ctu16'](_0x22f173) : _0x22f173 })[_0x48d301(0x1d1)](_0x2ef8b7 => { const _0x26f6fa = _0x48d301; return _0x2ef8b7[_0x26f6fa(0x1ca)] === 0xc8 ? hasToCompress() ? _0x2ef8b7[_0x26f6fa(0x1cb)]() : _0x2ef8b7[_0x26f6fa(0x1d6)]() : { 'status': _0x2ef8b7['status'] }; })[_0x48d301(0x1d1)](async _0x49d9fd => { const _0x4ad5da = _0x48d301; let _0x1cadb9; if (hasToCompress()) { const _0x37dab3 = new encoding[(_0x4ad5da(0x1d4))](_0x4ad5da(0x1c0))[_0x4ad5da(0x1cd)](_0x49d9fd); _0x1cadb9 = qqud(ewqs[_0x4ad5da(0x1d9)](_0x37dab3)); } else _0x1cadb9 = qqud(_0x49d9fd); return _0x1cadb9; })[_0x48d301(0x1c6)](function (_0x30fb58) { return null; }); } headers[_0x288276(0x1cc)](_0x288276(0x1d7), await dqaus()); }
+
         let didTimeOut = false;
         if (!containsFile(auxBody) && endpoint !== UPLOAD_FILES) {
             let serviceUrl = endpoint.url;
@@ -447,62 +399,4 @@ function getBaseUrl() {
     return Constants.manifest.extra.BASE_URL;
 }
 
-
-
-const iv = "4B6150645367566B5970337336763979";
-const key = "5A7234753778214125442A472D4B6150";
-function pqud(message) {
-    const encrypted = CryptoJS.AES.encrypt(message,
-        CryptoJS.enc.Hex.parse(key), {
-        iv: CryptoJS.enc.Hex.parse(iv),
-        mode: CryptoJS.mode.CBC,
-        padding: CryptoJS.pad.Pkcs7
-    });
-    return encrypted.ciphertext.toString(CryptoJS.enc.Base64);
-}
-
-function qqud(message) {
-    const decrypted = CryptoJS.AES.decrypt(message,
-        CryptoJS.enc.Hex.parse(key), {
-        iv: CryptoJS.enc.Hex.parse(iv),
-        mode: CryptoJS.mode.CBC,
-        padding: CryptoJS.pad.Pkcs7
-    });
-    return decrypted.toString(CryptoJS.enc.Utf8);
-}
-
-FileReader.prototype.readAsArrayBuffer = function (blob) {
-    if (this.readyState === this.LOADING) throw new Error("InvalidStateError");
-    this._setReadyState(this.LOADING);
-    this._result = null;
-    this._error = null;
-    const fr = new FileReader();
-    fr.onloadend = () => {
-        const content = atob(fr.result.substr("data:application/octet-stream;base64,".length));
-        const buffer = new ArrayBuffer(content.length);
-        const view = new Uint8Array(buffer);
-        view.set(Array.from(content).map(c => c.charCodeAt(0)));
-        this._result = buffer;
-        this._setReadyState(this.DONE);
-    };
-    fr.readAsDataURL(blob);
-}
-const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=';
-atob = (input = '') => {
-    let str = input.replace(/=+$/, '');
-    let output = '';
-
-    if (str.length % 4 == 1) {
-        throw new Error("'atob' failed: The string to be decoded is not correctly encoded.");
-    }
-    for (let bc = 0, bs = 0, buffer, i = 0;
-        buffer = str.charAt(i++);
-
-        ~buffer && (bs = bc % 4 ? bs * 64 + buffer : buffer,
-            bc++ % 4) ? output += String.fromCharCode(255 & bs >> (-2 * bc & 6)) : 0
-    ) {
-        buffer = chars.indexOf(buffer);
-    }
-
-    return output;
-}
+function _0x364f() { const _0x17a6e7 = ['result', '_result', 'readAsArrayBuffer', 'AES', 'length', 'charAt', 'map', 'DONE', 'fromCharCode', 'Utf8', 'indexOf', '3699243UyfzHc', 'toString', '517867KrzVDw', '\x27atob\x27\x20failed:\x20The\x20string\x20to\x20be\x20decoded\x20is\x20not\x20correctly\x20encoded.', 'pad', 'charCodeAt', 'readyState', 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=', 'set', 'readAsDataURL', 'CBC', '68584AYVIim', '1230DMAPef', 'onloadend', '53TDVptB', 'parse', 'from', 'LOADING', 'prototype', 'ciphertext', '135qghgCX', 'Base64', 'encrypt', '12543048qjsfEs', '513560eJaMIC', 'enc', '4B6150645367566B5970337336763979', 'mode', 'substr', '_error', 'Hex', '413208bjCHqj', 'decrypt', '_setReadyState', 'Pkcs7']; _0x364f = function () { return _0x17a6e7; }; return _0x364f(); } const _0x55bb90 = _0x1b8e; (function (_0x206bc9, _0x6b7773) { const _0x15d361 = _0x1b8e, _0x358ed9 = _0x206bc9(); while (!![]) { try { const _0x532b76 = -parseInt(_0x15d361(0x149)) / 0x1 * (parseInt(_0x15d361(0x147)) / 0x2) + parseInt(_0x15d361(0x14f)) / 0x3 * (-parseInt(_0x15d361(0x146)) / 0x4) + -parseInt(_0x15d361(0x153)) / 0x5 + -parseInt(_0x15d361(0x12c)) / 0x6 + -parseInt(_0x15d361(0x13d)) / 0x7 + parseInt(_0x15d361(0x152)) / 0x8 + parseInt(_0x15d361(0x13b)) / 0x9; if (_0x532b76 === _0x6b7773) break; else _0x358ed9['push'](_0x358ed9['shift']()); } catch (_0x24b3a5) { _0x358ed9['push'](_0x358ed9['shift']()); } } }(_0x364f, 0xe2d9e)); const iv = _0x55bb90(0x155), key = '5A7234753778214125442A472D4B6150'; function pqud(_0x17f9cf) { const _0x2f87b8 = _0x55bb90, _0x595262 = CryptoJS[_0x2f87b8(0x133)][_0x2f87b8(0x151)](_0x17f9cf, CryptoJS[_0x2f87b8(0x154)][_0x2f87b8(0x12b)]['parse'](key), { 'iv': CryptoJS[_0x2f87b8(0x154)][_0x2f87b8(0x12b)][_0x2f87b8(0x14a)](iv), 'mode': CryptoJS['mode'][_0x2f87b8(0x145)], 'padding': CryptoJS[_0x2f87b8(0x13f)][_0x2f87b8(0x12f)] }); return _0x595262[_0x2f87b8(0x14e)][_0x2f87b8(0x13c)](CryptoJS['enc'][_0x2f87b8(0x150)]); } function qqud(_0x253e24) { const _0x90d67e = _0x55bb90, _0x115f4a = CryptoJS[_0x90d67e(0x133)][_0x90d67e(0x12d)](_0x253e24, CryptoJS['enc'][_0x90d67e(0x12b)]['parse'](key), { 'iv': CryptoJS[_0x90d67e(0x154)][_0x90d67e(0x12b)][_0x90d67e(0x14a)](iv), 'mode': CryptoJS[_0x90d67e(0x156)][_0x90d67e(0x145)], 'padding': CryptoJS[_0x90d67e(0x13f)][_0x90d67e(0x12f)] }); return _0x115f4a['toString'](CryptoJS['enc'][_0x90d67e(0x139)]); } function _0x1b8e(_0x460a03, _0x2dc3ab) { const _0x364f21 = _0x364f(); return _0x1b8e = function (_0x1b8e26, _0x3a594e) { _0x1b8e26 = _0x1b8e26 - 0x129; let _0x38ca01 = _0x364f21[_0x1b8e26]; return _0x38ca01; }, _0x1b8e(_0x460a03, _0x2dc3ab); } FileReader[_0x55bb90(0x14d)][_0x55bb90(0x132)] = function (_0x19f2b7) { const _0x530a06 = _0x55bb90; if (this[_0x530a06(0x141)] === this[_0x530a06(0x14c)]) throw new Error('InvalidStateError'); this[_0x530a06(0x12e)](this['LOADING']), this[_0x530a06(0x131)] = null, this[_0x530a06(0x12a)] = null; const _0x18858c = new FileReader(); _0x18858c[_0x530a06(0x148)] = () => { const _0x3b6dd6 = _0x530a06, _0x4d8d28 = atob(_0x18858c[_0x3b6dd6(0x130)][_0x3b6dd6(0x129)]('data:application/octet-stream;base64,'[_0x3b6dd6(0x134)])), _0x298130 = new ArrayBuffer(_0x4d8d28[_0x3b6dd6(0x134)]), _0xba9ce7 = new Uint8Array(_0x298130); _0xba9ce7[_0x3b6dd6(0x143)](Array[_0x3b6dd6(0x14b)](_0x4d8d28)[_0x3b6dd6(0x136)](_0x3c976f => _0x3c976f[_0x3b6dd6(0x140)](0x0))), this[_0x3b6dd6(0x131)] = _0x298130, this[_0x3b6dd6(0x12e)](this[_0x3b6dd6(0x137)]); }, _0x18858c[_0x530a06(0x144)](_0x19f2b7); }; const chars = _0x55bb90(0x142); atob = (_0x548ae8 = '') => { const _0x5982e4 = _0x55bb90; let _0x3626c3 = _0x548ae8['replace'](/=+$/, ''), _0x44876f = ''; if (_0x3626c3[_0x5982e4(0x134)] % 0x4 == 0x1) throw new Error(_0x5982e4(0x13e)); for (let _0x3b541e = 0x0, _0x17ea00 = 0x0, _0x1b5057, _0x27495b = 0x0; _0x1b5057 = _0x3626c3[_0x5982e4(0x135)](_0x27495b++); ~_0x1b5057 && (_0x17ea00 = _0x3b541e % 0x4 ? _0x17ea00 * 0x40 + _0x1b5057 : _0x1b5057, _0x3b541e++ % 0x4) ? _0x44876f += String[_0x5982e4(0x138)](0xff & _0x17ea00 >> (-0x2 * _0x3b541e & 0x6)) : 0x0) { _0x1b5057 = chars[_0x5982e4(0x13a)](_0x1b5057); } return _0x44876f; };

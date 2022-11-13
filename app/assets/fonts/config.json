@@ -1,34 +1,46 @@
 {
-    "name": "FontAwesome",
-    "css_prefix_text": "icon-",
-    "css_use_suffix": false,
-    "hinting": true,
-    "units_per_em": 1000,
-    "ascent": 850,
-    "glyphs": [
-        {
-            "uid": "lu2wqmd7v9zp21knhy4eifo41wjp4cnx",
-            "css": "th-list",
-            "code": 59392,
-            "src": "typicons"
-        },
-        {
-            "uid": "bczb7qup4axmc490xmuuv8qdhcnbgeyf",
-            "css": "user",
-            "code": 59393,
-            "src": "typicons"
-        },
-        {
-            "uid": "dpxunrtmigvk6jm0ieo7axfsgzx4awll",
-            "css": "cog",
-            "code": 59394,
-            "src": "typicons"
-        },
-        {
-            "uid": "1gf923f9wvaezxmfon515dglxa3drf0e",
-            "css": "plus",
-            "code": 59396,
-            "src": "typicons"
-        }
-    ]
+  "name": "FontAwesome",
+  "css_prefix_text": "icon-",
+  "css_use_suffix": false,
+  "hinting": true,
+  "units_per_em": 1000,
+  "ascent": 850,
+  "glyphs": [
+    {
+      "uid": "lu2wqmd7v9zp21knhy4eifo41wjp4cnx",
+      "css": "th-list",
+      "code": 59392,
+      "src": "typicons"
+    },
+    {
+      "uid": "bczb7qup4axmc490xmuuv8qdhcnbgeyf",
+      "css": "user",
+      "code": 59393,
+      "src": "typicons"
+    },
+    {
+      "uid": "dpxunrtmigvk6jm0ieo7axfsgzx4awll",
+      "css": "cog",
+      "code": 59394,
+      "src": "typicons"
+    },
+    {
+      "uid": "1gf923f9wvaezxmfon515dglxa3drf0e",
+      "css": "plus",
+      "code": 59395,
+      "src": "typicons"
+    },
+    {
+      "uid": "1dq4tek4k8ea7zlj4kc3w83itnutaxg5",
+      "css": "cancel",
+      "code": 59396,
+      "src": "typicons"
+    },
+    {
+      "uid": "43fl9m553j1z5937vfjz0lgolrlspxwl",
+      "css": "ok",
+      "code": 59397,
+      "src": "typicons"
+    }
+  ]
 }
