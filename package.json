@@ -25,6 +25,7 @@
     "expo-updates": "~0.14.7",
     "i18n-js": "^4.1.1",
     "muba-custom-scroll-view": "^5.0.1",
+    "muba-input-select": "^5.0.1",
     "muba-input-text": "^5.0.1",
     "muba-phone-group": "^5.0.1",
     "muba-popup-advice": "^5.0.0",

@@ -315,6 +315,10 @@ export const commonStyles = StyleSheet.create({
     fontSize: 12
   },
 
+  fSize13: {
+    fontSize: 13
+  },
+
   fSize15: {
     fontSize: 15
   },

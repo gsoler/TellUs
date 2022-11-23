@@ -1,67 +1,76 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Image, Keyboard, Text, TextInput, TouchableHighlight, View } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
 import CustomScrollView from 'muba-custom-scroll-view';
-// import PopupAdvice from 'muba-popup-advice';
+import PopupAdvice from 'muba-popup-advice';
 import LoadingCursor from '../components/LoadingCursor';
 import { isRTL, strings } from '../locales/I18n';
 import { commonStyles, loginStyles } from '../styles/commonStyles';
 import { validateFields } from '../utils/Validator.js';
-import { request } from '../utils/APIUtils';
+import { LOGIN, request } from '../utils/APIUtils';
 import { Views } from '../utils/Views';
-import { navigate } from '../utils/Common';
+import { navigate, replace } from '../utils/Common';
+import { createIconSetFromFontello } from 'react-native-vector-icons';
+import fontelloConfig from '../assets/fonts/config.json';
+const FontAwesomeIcon = createIconSetFromFontello(fontelloConfig);
 
-export default function Login() {
-  const navigation = useNavigation();
+export default function Login({ route, navigation }) {
   const [isLoading, setLoading] = useState(false);
-  const [usernameErrorText, setUsernameErrorText] = useState('');
   const [usernameError, setUsernameError] = useState(false);
-  const [username, setUsername] = useState('');
-  const [passwordErrorText, setPasswordErrorText] = useState('');
+  const [username, setUsername] = useState(route.params?.identityNumber);
   const [passwordError, setPasswordError] = useState(false);
   const [password, setPassword] = useState('');
-  const [popupAdviceTitle, setPopupAdviceTitle] = useState();
-  const [popupAdviceMessage, setPopupAdviceMessage] = useState();
 
+  const popupAdvice = useRef();
   const passwordInput = useRef();
+
+  const mounted = useRef();
+  useEffect(() => {
+    if (!mounted.current) {
+      mounted.current = true;
+    } else {
+      if (route.params?.identityNumber) {
+        setUsername(route.params?.identityNumber);
+      }
+    }
+  });
 
   function validateForm() {
     Keyboard.dismiss();
     setLoading(true);
-    setUsernameError(false);
-    setUsernameErrorText('');
-    setPasswordError(false);
-    setPasswordErrorText('');
-    const data = { username: { value: username, required: true, type: 'email' }, password: { value: password, required: true } };
-
-    const result = validateFields(data)
-    if (result.username.error) {
-      if (!result.username.required) {
-        setUsernameErrorText(strings('login.emailRequired'));
-        setUsernameError(true);
-      } else if (!result.username.type) {
-        setUsernameErrorText(strings('login.emailBadFormat'));
-        setUsernameError(true);
+    const data = {
+      username: {
+        value: username,
+        required: true,
+        setError: setUsernameError
+      },
+      password: {
+        value: password,
+        required: true,
+        setError: setPasswordError
       }
-      setLoading(false);
-      return false;
+    };
+
+    const result = validateFields(data);
+    let anyError = false;
+    for (let key of Object.keys(result)) {
+      anyError = anyError || result[key];
     }
 
-    if (result.password.error) {
-      if (!result.password.required) {
-        setPasswordErrorText(strings('login.passwordRequired'));
-        setPasswordError(true);
-      }
+    if (anyError) {
       setLoading(false);
-      return false;
+    } else {
+      login();
     }
-
-    login();
   }
 
   async function login() {
-    console.log(await request(this, 'employees/login', { username: username, password: password }));
-    setLoading(false);
+    const response = await request(this, LOGIN, { username: username, password: password });
+    if (response.httpStatus === 200) {
+      replace(navigation, Views.MAIN_STACK)
+    } else {
+      setLoading(false);
+      popupAdvice.current.show();
+    }
   }
 
   return (
@@ -76,12 +85,12 @@ export default function Login() {
           <Text style={loginStyles.loginContentH2}>{strings('login.signInContinue')}</Text>
 
           <View style={loginStyles.formLoginContent}>
-            <Text style={loginStyles.inputErrorText}>{usernameErrorText}</Text>
             <TextInput
               style={[loginStyles.loginInputText, usernameError ? loginStyles.loginInputError : '', { textAlign: isRTL() ? 'right' : 'left', }]}
               placeholder={strings('login.identityNumber')}
               placeholderTextColor="#858585"
               onChangeText={text => setUsername(text)}
+              value={username}
               returnKeyType={"next"}
               onSubmitEditing={(event) => passwordInput.current.focus()}
               autoCapitalize='none'
@@ -90,7 +99,6 @@ export default function Login() {
           </View>
 
           <View style={loginStyles.formLoginContent}>
-            <Text style={loginStyles.inputErrorText}>{passwordErrorText}</Text>
             <TextInput
               ref={passwordInput}
               style={[[loginStyles.loginInputText, passwordError ? loginStyles.loginInputError : '', { textAlign: isRTL() ? 'right' : 'left', }]]}
@@ -117,9 +125,10 @@ export default function Login() {
           <Image source={require('../assets/images/login-bg.png')} style={commonStyles.imageFooter} resizeMode="stretch" />
         </View>
       </CustomScrollView>
-      {/* <PopupAdvice icon={<FontAwesomeIcon name='exclamation-triangle' />} title={popupAdviceTitle} headerColor={commonStyles.red} buttonColor={commonStyles.backgroundColorBlack} textButton={strings('login.tryAgain').toUpperCase()} ref={(popupAdvice) => { this.popupAdvice = popupAdvice; }}>
-        <Text style={[commonStyles.popupText, commonStyles.popupTextError]}>{popupAdviceMessage}</Text>
-      </PopupAdvice> */}
+      <PopupAdvice icon={<FontAwesomeIcon name='attention' />} title={strings('error')} headerColor={commonStyles.redText}
+        ref={popupAdvice} textButton={strings('close').toUpperCase()}>
+        <Text style={commonStyles.textCenter}>{strings('login.invalidLogin')}</Text>
+      </PopupAdvice>
     </View>
   );
 }

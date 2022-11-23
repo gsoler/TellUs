@@ -1,5 +1,7 @@
 {
   "loading": "Loading",
+  "close": "Close",
+  "error": "Error",
   "home": {
     "welcome": "Hello! This is a Test."
   },
@@ -11,9 +13,7 @@
     "register": "Not registered? Register now",
     "forgetPassword": "Forgot password?",
     "signIn": "Sign in",
-    "emailRequired": "Email address field cannot be empty",
-    "emailBadFormat": "Please enter a valid email address",
-    "passwordRequired": "Password field cannot be empty"
+    "invalidLogin": "Invalid username or password"
   },
   "register": {
     "title": "Register employee",
@@ -21,12 +21,23 @@
     "lastName": "Last name",
     "phone": "Phone number",
     "email": "Email",
+    "address": "Address",
+    "city": "City",
+    "zipCode": "ZIP Code",
+    "country": "Country",
     "confirmPassword": "Confirm password",
     "register": "Register",
+    "back": "Go back",
     "passwordLength": "Length between 8 and 50 characters",
     "passwordUppercase": "Must contain at least one capital letter",
     "passwordLowercase": "Must contain at least one lowercase letter",
     "passwordNumeric": "Must contain at least one numeric character",
-    "passwordSpecialChar": "Must contain at least one symbol (!?@.,-_<>+-*)"
+    "passwordSpecialChar": "Must contain at least one symbol (!?@.,-_<>+-*)",
+    "userExists": "User already exists"
+  },
+  "registerCode": {
+    "code": "Code",
+    "send": "Send",
+    "invalidCode": "The code is not valid"
   }
 }

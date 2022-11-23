@@ -18,6 +18,7 @@ const FETCH_TIMEOUT = 30000;
 const TOKEN = 'token';
 const DEVICE_IDENTIFICATOR = 'imei';
 export const USER = 'user';
+export const UPLOADED_FILES_KEY = 'uploadedFiles';
 
 async function generateDeviceIdentificator() {
     const deviceIdentificator = uuidv4();
@@ -168,7 +169,7 @@ export async function request(context, endpoint, body, callbackFunction, retry =
                                 let responseText;
                                 if (hasToCompress()) {
                                     let encryptedText = new encoding.TextDecoder('UTF-16').decode(buffer);
-                                    if (encryptedText != null) {
+                                    if (encryptedText != null && encryptedText !== '') {
                                         if (encryptedText.startsWith('"')) {
                                             encryptedText = encryptedText.substring(1);
                                         }
@@ -234,19 +235,29 @@ export async function request(context, endpoint, body, callbackFunction, retry =
                             // Unable to compute progress information since the total size is unknown
                         }
                     });
-                    xhr.onreadystatechange = async () => {
-                        if (xhr.readyState == XMLHttpRequest.DONE) {
+                    xhr.addEventListener('loadend', async () => {
+                        if (xhr.readyState == XMLHttpRequest.DONE && xhr.status === 200) {
                             const jsonObject = JSON.parse(qqud(hasToCompress() ? ewqs.dfu16(xhr.responseText) : xhr.responseText));
-                            let result;
-                            if (UPLOAD_FILES !== endpoint) {
-                                result = await request(context, endpoint, replaceFiles(auxBody, jsonObject), callbackFunction);
-                            } else {
-                                result = jsonObject;
+                            const uploadedFiles = [];
+                            for (let file of jsonObject) {
+                                uploadedFiles.push({ ...file });
                             }
+                            const result = await request(context, endpoint, replaceFiles(auxBody, jsonObject), callbackFunction);
+                            result[UPLOADED_FILES_KEY] = uploadedFiles;
                             hideProgressBar(context);
                             return resolve(result);
                         }
-                    }
+                    });
+                    xhr.addEventListener('error', async (e) => {
+                        console.log('error', e);
+                        hideProgressBar(context);
+                        showConnectionError(context);
+                    });
+                    xhr.addEventListener('abort', async (e) => {
+                        console.log('abort', e);
+                        hideProgressBar(context);
+                        showConnectionError(context);
+                    });
                     xhr.open(UPLOAD_FILES.method, getBaseUrl() + UPLOAD_FILES.url);
                     for (let headerName of Object.keys(headers.map)) {
                         xhr.setRequestHeader(headerName, headers.map[headerName]);
@@ -266,7 +277,7 @@ function getFormDataWithFiles(body) {
     const formData = new FormData();
     const files = readFiles(body);
     for (let file of files) {
-        addFile(formData, file);
+        addFile(formData, { ...file, uri: file.uri.split(' ').join('\ ') });
     }
     if (body.deletedFiles?.length > 0) {
         formData.append('DeletedFiles', JSON.stringify(body.deletedFiles));
@@ -344,11 +355,11 @@ function containsFile(body) {
     if (body != null) {
         for (let key of Object.keys(body)) {
             if (body[key] != null) {
-                if (key === 'uri' && body[key] != null && body[key] !== '') {
+                if (key === 'uri' && body[key].startsWith('file:')) {
                     hasFile = true;
                 } else if (Array.isArray(body[key]) && body[key].length > 0) {
-                    for (let index = 0; index < body[key].length; ++index) {
-                        hasFile = hasFile || containsFile(body[key][index]);
+                    for (let item of body[key]) {
+                        hasFile = hasFile || containsFile(item);
                     }
                 } else if (typeof body[key] === 'object') {
                     hasFile = hasFile || containsFile(body[key]);
@@ -356,7 +367,7 @@ function containsFile(body) {
             }
         }
     }
-    return hasFile || body.deletedFiles?.length > 0;
+    return hasFile || body?.deletedFiles?.length > 0;
 }
 
 function isJSON(text) {

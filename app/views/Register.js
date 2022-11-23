@@ -1,13 +1,16 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Image, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import CustomScrollView from 'muba-custom-scroll-view';
-// import PopupAdvice from 'muba-popup-advice';
+import PopupAdvice from 'muba-popup-advice';
 import PhoneGroup from 'muba-phone-group';
+import InputSelect from 'muba-input-select';
 import LoadingCursor from '../components/LoadingCursor';
 import { isRTL, strings } from '../locales/I18n';
 import { commonStyles, loginStyles } from '../styles/commonStyles';
 import { validateFields } from '../utils/Validator.js';
-import { REGISTER, request } from '../utils/APIUtils';
+import { GET_COUNTRIES, REGISTER, request } from '../utils/APIUtils';
+import { goBack, replace } from '../utils/Common';
+import { Views } from '../utils/Views';
 import { createIconSetFromFontello } from 'react-native-vector-icons';
 import fontelloConfig from '../assets/fonts/config.json';
 const FontAwesomeIcon = createIconSetFromFontello(fontelloConfig);
@@ -15,7 +18,7 @@ const FontAwesomeIcon = createIconSetFromFontello(fontelloConfig);
 const MIN_PASSWORD_LENGTH = 8;
 const MAX_PASSWORD_LENGTH = 50;
 
-export default function Register() {
+export default function Register({ navigation }) {
   const [isLoading, setLoading] = useState(false);
   const [firstName, setFirstName] = useState();
   const [firstNameError, setFirstNameError] = useState();
@@ -27,6 +30,13 @@ export default function Register() {
   const [phoneNumberError, setPhoneNumerError] = useState();
   const [email, setEmail] = useState();
   const [emailError, setEmailError] = useState();
+  const [address, setAddress] = useState();
+  const [addressError, setAddressError] = useState();
+  const [city, setCity] = useState();
+  const [cityError, setCityError] = useState();
+  const [zipCode, setZipCode] = useState();
+  const [zipCodeError, setZipCodeError] = useState();
+  const [countryError, setCountryError] = useState();
   const [password, setPassword] = useState();
   const [passwordError, setPasswordError] = useState();
   const [confirmPassword, setConfirmPassword] = useState();
@@ -37,13 +47,37 @@ export default function Register() {
   const [passwordLowercaseOK, setPasswordLowercaseOK] = useState(false);
   const [passwordNumericOK, setPasswordNumericOK] = useState(false);
   const [passwordSpecialCharOK, setPasswordSpecialCharOK] = useState(false);
+  const [countryList, setCountryList] = useState({
+    elements: [{ section: true, value: null, label: strings('register.country') }],
+    selectedItem: null
+  });
 
   const lastNameInput = useRef();
   const identityNumberInput = useRef();
   const phoneNumberInput = useRef();
   const emailInput = useRef();
+  const addressInput = useRef();
+  const cityInput = useRef();
+  const zipCodeInput = useRef();
+  const countryInput = useRef();
   const passwordInput = useRef();
   const confirmPasswordInput = useRef();
+  const popupAdvice = useRef();
+
+  const mounted = useRef();
+  useEffect(() => {
+    if (!mounted.current) {
+      loadCountries(setLoading);
+      mounted.current = true;
+    }
+  });
+
+  loadCountries = async () => {
+    const responseJson = await request(this, GET_COUNTRIES);
+    if (responseJson.httpStatus === 200) {
+      setCountryList({ elements: [countryList.elements[0], ...responseJson.list], selectedItem: countryList.selectedItem });
+    }
+  }
 
   function validateForm() {
     // setLoading(true);
@@ -75,6 +109,22 @@ export default function Register() {
         type: 'email',
         setError: setEmailError
       },
+      address: {
+        value: address,
+        required: true,
+        setError: setAddressError
+      },
+      city: {
+        value: city,
+        required: true,
+        setError: setCityError
+      },
+      zipCode: {
+        value: zipCode,
+        required: true,
+        length: 5,
+        setError: setZipCodeError
+      },
       password: {
         value: password,
         required: true,
@@ -87,7 +137,9 @@ export default function Register() {
       }
     };
 
-    const result = validateFields(data)
+    const countryOK = countryInput.current.onSubmitValidate();
+    setCountryError(!countryOK);
+    const result = validateFields(data) && countryOK;
     let anyError = checkPassword(password, true);
     for (let key of Object.keys(result)) {
       anyError = anyError || result[key];
@@ -145,6 +197,7 @@ export default function Register() {
     if (showError) {
       setPasswordError(hasError);
       setConfirmPasswordError(newPassword !== confirmPassword);
+      hasError = hasError || newPassword !== confirmPassword;
     } else if (!hasError) {
       setPasswordError(false);
     }
@@ -159,10 +212,18 @@ export default function Register() {
       identityNumber: identityNumber,
       phone: phoneNumber[0],
       email: email,
+      address: address,
+      city: city,
+      zipCode: zipCode,
+      country: countryList.selectedItem,
       password: password
     });
 
-    console.log(response)
+    if (response.httpStatus === 200) {
+      replace(navigation, Views.REGISTER_CODE, { identityNumber: identityNumber, message: response.value });
+    } else {
+      popupAdvice.current.show()
+    }
   }
 
   return (
@@ -186,7 +247,7 @@ export default function Register() {
           <View style={loginStyles.formLoginContent}>
             <TextInput
               ref={lastNameInput}
-              style={[[loginStyles.loginInputText, lastNameError ? loginStyles.loginInputError : '', { textAlign: isRTL() ? 'right' : 'left', }]]}
+              style={[loginStyles.loginInputText, lastNameError ? loginStyles.loginInputError : '', { textAlign: isRTL() ? 'right' : 'left', }]}
               onChangeText={text => setLastName(text)}
               returnKeyType={'next'}
               onSubmitEditing={(event) => identityNumberInput.current.focus()}
@@ -197,7 +258,7 @@ export default function Register() {
           <View style={loginStyles.formLoginContent}>
             <TextInput
               ref={identityNumberInput}
-              style={[[loginStyles.loginInputText, identityNumberError ? loginStyles.loginInputError : '', { textAlign: isRTL() ? 'right' : 'left', }]]}
+              style={[loginStyles.loginInputText, identityNumberError ? loginStyles.loginInputError : '', { textAlign: isRTL() ? 'right' : 'left', }]}
               onChangeText={text => setIdentityNumber(text)}
               returnKeyType={'next'}
               onSubmitEditing={(event) => phoneNumberInput.current.focus()}
@@ -210,7 +271,7 @@ export default function Register() {
             placeholder=' '
             hideCancel={true}
             phoneBoxStyle={{ backgroundColor: 'transparent' }}
-            inputStyle={[[loginStyles.loginInputText, phoneNumberError ? loginStyles.loginInputError : '', { textAlign: isRTL() ? 'right' : 'left', }]]}
+            inputStyle={[loginStyles.loginInputText, phoneNumberError ? loginStyles.loginInputError : '', { textAlign: isRTL() ? 'right' : 'left', }]}
             country={'ES'}
             maxPhones={1}
             disabled={false}
@@ -222,20 +283,71 @@ export default function Register() {
           <View style={loginStyles.formLoginContent}>
             <TextInput
               ref={emailInput}
-              style={[[loginStyles.loginInputText, emailError ? loginStyles.loginInputError : '', { textAlign: isRTL() ? 'right' : 'left', }]]}
+              style={[loginStyles.loginInputText, emailError ? loginStyles.loginInputError : '', { textAlign: isRTL() ? 'right' : 'left', }]}
               onChangeText={text => setEmail(text)}
               returnKeyType={'next'}
               autoCapitalize='none'
               keyboardType='email-address'
-              onSubmitEditing={(event) => passwordInput.current.focus()}
+              onSubmitEditing={(event) => addressInput.current.focus()}
               underlineColorAndroid='transparent' />
+          </View>
+
+          <Text style={{ textAlign: isRTL() ? 'right' : 'left' }}>{strings('register.address')} <Text style={commonStyles.redText}>*</Text></Text>
+          <View style={loginStyles.formLoginContent}>
+            <TextInput
+              ref={addressInput}
+              style={[loginStyles.loginInputText, addressError ? loginStyles.loginInputError : '', { textAlign: isRTL() ? 'right' : 'left', }]}
+              onChangeText={text => setAddress(text)}
+              returnKeyType={'next'}
+              onSubmitEditing={(event) => cityInput.current.focus()}
+              underlineColorAndroid='transparent' />
+          </View>
+
+          <Text style={{ textAlign: isRTL() ? 'right' : 'left' }}>{strings('register.city')} <Text style={commonStyles.redText}>*</Text></Text>
+          <View style={loginStyles.formLoginContent}>
+            <TextInput
+              ref={cityInput}
+              style={[loginStyles.loginInputText, cityError ? loginStyles.loginInputError : '', { textAlign: isRTL() ? 'right' : 'left', }]}
+              onChangeText={text => setCity(text)}
+              returnKeyType={'next'}
+              onSubmitEditing={(event) => zipCodeInput.current.focus()}
+              underlineColorAndroid='transparent' />
+          </View>
+
+          <Text style={{ textAlign: isRTL() ? 'right' : 'left' }}>{strings('register.zipCode')} <Text style={commonStyles.redText}>*</Text></Text>
+          <View style={loginStyles.formLoginContent}>
+            <TextInput
+              ref={zipCodeInput}
+              style={[loginStyles.loginInputText, zipCodeError ? loginStyles.loginInputError : '', { textAlign: isRTL() ? 'right' : 'left', }]}
+              onChangeText={text => setZipCode(text)}
+              returnKeyType={'next'}
+              autoCapitalize='none'
+              maxLength={5}
+              keyboardType='numeric'
+              onSubmitEditing={(event) => countryInput.current.open()}
+              underlineColorAndroid='transparent' />
+          </View>
+
+          <Text style={{ textAlign: isRTL() ? 'right' : 'left' }}>{strings('register.country')} <Text style={commonStyles.redText}>*</Text></Text>
+          <View style={loginStyles.formLoginContent}>
+            <InputSelect
+              ref={countryInput}
+              required={true}
+              options={countryList}
+              containerStyle={[loginStyles.registerInputSelect, countryError ? loginStyles.loginInputError : '', { textAlign: isRTL() ? 'right' : 'left', }]}
+              selectStyle={countryError ? { backgroundColor: loginStyles.loginInputError.backgroundColor } : null}
+              placeholder={strings('register.country')}
+              onChange={(value) => {
+                setCountryList({ ...countryList, selectedItem: value });
+                passwordInput.current.focus();
+              }} />
           </View>
 
           <Text style={{ textAlign: isRTL() ? 'right' : 'left' }}>{strings('login.password')} <Text style={commonStyles.redText}>*</Text></Text>
           <View style={loginStyles.formLoginContent}>
             <TextInput
               ref={passwordInput}
-              style={[[loginStyles.loginInputText, passwordError ? loginStyles.loginInputError : '', { textAlign: isRTL() ? 'right' : 'left', }]]}
+              style={[loginStyles.loginInputText, passwordError ? loginStyles.loginInputError : '', { textAlign: isRTL() ? 'right' : 'left', }]}
               onChangeText={text => { setPassword(text); checkPassword(text); }}
               returnKeyType={'next'}
               autoCapitalize='none'
@@ -253,7 +365,7 @@ export default function Register() {
           <View style={loginStyles.formLoginContent}>
             <TextInput
               ref={confirmPasswordInput}
-              style={[[loginStyles.loginInputText, confirmPasswordError ? loginStyles.loginInputError : '', { textAlign: isRTL() ? 'right' : 'left', }]]}
+              style={[loginStyles.loginInputText, confirmPasswordError ? loginStyles.loginInputError : '', { textAlign: isRTL() ? 'right' : 'left', }]}
               onChangeText={text => setConfirmPassword(text)}
               autoCapitalize='none'
               secureTextEntry={true}
@@ -261,20 +373,20 @@ export default function Register() {
               underlineColorAndroid='transparent' />
           </View>
 
-          <Text style={[loginStyles.loginContent, commonStyles.textRight]} onPress={() => navigate(this, 'ForgetPassword')}>{strings('login.forgetPassword')}</Text>
-
           <TouchableOpacity style={loginStyles.loginBtn} onPress={() => validateForm()} underlayColor="#ff5d00">
             <Text style={loginStyles.loginBtnText}>{strings('register.register').toUpperCase()}</Text>
           </TouchableOpacity>
+          <Text style={[loginStyles.loginContent, commonStyles.textCenter, commonStyles.fSize13]} onPress={() => goBack(navigation)}>{strings('register.back')}</Text>
         </View>
 
         <View style={commonStyles.footer}>
           <Image source={require('../assets/images/login-bg.png')} style={commonStyles.imageFooter} resizeMode="stretch" />
         </View>
       </CustomScrollView>
-      {/* <PopupAdvice icon={<FontAwesomeIcon name='exclamation-triangle' />} title={popupAdviceTitle} headerColor={commonStyles.red} buttonColor={commonStyles.backgroundColorBlack} textButton={strings('login.tryAgain').toUpperCase()} ref={(popupAdvice) => { this.popupAdvice = popupAdvice; }}>
-        <Text style={[commonStyles.popupText, commonStyles.popupTextError]}>{popupAdviceMessage}</Text>
-      </PopupAdvice> */}
+      <PopupAdvice icon={<FontAwesomeIcon name='attention' />} title={strings('error')} headerColor={commonStyles.redText}
+        ref={popupAdvice} textButton={strings('close').toUpperCase()}>
+        <Text style={commonStyles.textCenter}>{strings('register.userExists')}</Text>
+      </PopupAdvice>
     </View>
   );
 }

@@ -4,6 +4,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { Views } from '../utils/Views';
 import Login from '../views/Login';
 import Register from '../views/Register';
+import RegisterCode from '../views/RegisterCode';
 
 const Stack = createNativeStackNavigator();
 
@@ -30,6 +31,10 @@ function LoginStack() {
             <Stack.Screen
                 name={Views.REGISTER}
                 component={Register}
+            />
+            <Stack.Screen
+                name={Views.REGISTER_CODE}
+                component={RegisterCode}
             />
         </Stack.Navigator>
     );

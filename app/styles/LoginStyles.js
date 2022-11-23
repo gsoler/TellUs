@@ -59,6 +59,13 @@ export const loginStyles = StyleSheet.create({
 		borderRadius: 5,
 	},
 
+	registerInputSelect: {
+		borderBottomWidth: 1,
+		color: '#333',
+		borderBottomColor: '#858585'
+	},
+
+
 	iconSignin: {
 		height: 50,
 		width: 50,
@@ -144,6 +151,10 @@ export const loginStyles = StyleSheet.create({
 		textAlign: isRTL() ? 'right' : 'left',
 		paddingLeft: isRTL() ? 0 : 15,
 		paddingRight: isRTL() ? 15 : 0,
+	},
+
+	codeInput: {
+		marginTop: 80
 	}
 });
 

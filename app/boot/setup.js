@@ -1,15 +1,13 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Localization from 'expo-localization';
 import * as SplashScreen from 'expo-splash-screen';
-import { StatusBar } from 'expo-status-bar';
 import { useFonts } from 'expo-font';
 import React, { useState, useEffect } from 'react';
-import { Platform, View } from 'react-native';
+import { View } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import LoginStack from './loginStack';
 import MainStack from './mainStack';
-import { addFontList } from 'muba-font';
 import { switchLanguage, loadLocaleData, readLastLanguage } from '../locales/I18n';
 import { Views } from '../utils/Views';
 import { createIconSetFromFontello } from 'react-native-vector-icons';
@@ -23,15 +21,12 @@ export default function Setup() {
   const [isLoggedIn, setLoggedIn] = useState(false);
 
   const [fontsLoaded] = useFonts({
+    Poppins: require('../assets/fonts/Poppins/Poppins-Regular.ttf'),
     PoppinsBold: require('../assets/fonts/Poppins/Poppins-Bold.ttf'),
     PoppinsMedium: require('../assets/fonts/Poppins/Poppins-Medium.ttf'),
     PoppinsSemiBold: require('../assets/fonts/Poppins/Poppins-SemiBold.ttf'),
     FontAwesome: require('../assets/fonts/Font-Awesome.ttf')
   });
-
-  const statusBarHeight = Platform.OS === 'android'
-    ? StatusBar.currentHeight || (Platform.Version < 23 ? 25 : 24)
-    : 0;
 
   useEffect(() => {
     loadAppConfig(setLocaleLoaded, setLoggedIn);
@@ -72,34 +67,8 @@ function renderIcon(name) {
 }
 
 async function loadAppConfig(setLocaleLoaded, setLoggedIn) {
-  await loadFont();
   await loadLocale(setLocaleLoaded);
   loadUserSession(setLoggedIn);
-}
-
-async function loadFont() {
-  await addFontList([
-    {
-      name: 'Poppins',
-      source: require('../assets/fonts/Poppins/Poppins-Regular.ttf')
-    },
-    {
-      name: 'PoppinsBold',
-      source: require('../assets/fonts/Poppins/Poppins-Bold.ttf')
-    },
-    {
-      name: 'PoppinsMedium',
-      source: require('../assets/fonts/Poppins/Poppins-Medium.ttf')
-    },
-    {
-      name: 'PoppinsSemiBold',
-      source: require('../assets/fonts/Poppins/Poppins-SemiBold.ttf')
-    },
-    {
-      name: 'FontAwesome',
-      source: require('../assets/fonts/Font-Awesome.ttf')
-    }
-  ]);
 }
 
 async function loadLocale(setLocaleLoaded) {

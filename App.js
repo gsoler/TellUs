@@ -15,7 +15,7 @@ export default function App() {
 
   return (
     <Provider store={store}>
-      <View style={[commonStyles.flex1]}>
+      <View style={[commonStyles.flex1, commonStyles.marginTopBar]}>
         <StatusBar
           barStyle='light-content'
           backgroundColor='transparent'

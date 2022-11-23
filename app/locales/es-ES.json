@@ -1,12 +1,14 @@
 {
   "loading": "Cargando",
+  "close": "Cerrar",
+  "error": "Error",
   "home": {
     "welcome": "Hola! Esto es un Test."
   },
   "login": {
     "welcome": "Bienvenido empleado,",
     "signInContinue": "Inicia sesión para continuar",
-    "identityNumber": "Identificador",
+    "identityNumber": "Documento de indentidad",
     "password": "Contraseña",
     "register": "¿No estás registrado? Regístrate ahora",
     "forgetPassword": "Has olvidado la Contraseña?",
@@ -21,12 +23,23 @@
     "lastName": "Apellidos",
     "phone": "Número de teléfono",
     "email": "Email",
+    "address": "Dirección",
+    "city": "Ciudad",
+    "zipCode": "Código postal",
+    "country": "País",
     "confirmPassword": "Confirmar contraseña",
     "register": "Registrar",
+    "back": "Atrás",
     "passwordLength": "Longitud entre 8 y 50 carácteres",
     "passwordUppercase": "Debe contener al menos una mayúscula",
     "passwordLowercase": "Debe contener al menos una minúscula",
     "passwordNumeric": "Debe contener al menos un carácter numérico",
-    "passwordSpecialChar": "Debe contener al menos un símbolo (!?@.,-_<>+-*)"
+    "passwordSpecialChar": "Debe contener al menos un símbolo (!?@.,-_<>+-*)",
+    "userExists": "El usuario ya existe"
+  },
+  "registerCode": {
+    "code": "Código",
+    "send": "Enviar",
+    "invalidCode": "El código no es válido"
   }
 }

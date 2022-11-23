@@ -1,7 +1,7 @@
 export function validateField(jsonField) {
 	const value = jsonField.value;
 
-	const valid = validateType(value, jsonField.type, jsonField.required);
+	const valid = validateType(value, jsonField.type, jsonField.length, jsonField.required);
 	if (jsonField['setError']) {
 		jsonField['setError'](!valid)
 	}
@@ -44,7 +44,7 @@ function isValidPhone(phone, required) {
 	}
 }
 
-function validateType(value, type, required) {
+function validateType(value, type, length, required) {
 	if (type == 'email') {
 		return isValidEmail(value, required)
 	} else if (type == 'phone') {
@@ -58,6 +58,6 @@ function validateType(value, type, required) {
 		}
 		return valid;
 	} else {
-		return !required || value?.length;
+		return !required || (!length && value?.length) || (length && value?.length === length);
 	}
 }
