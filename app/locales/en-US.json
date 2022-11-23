@@ -36,6 +36,7 @@
     "userExists": "User already exists"
   },
   "registerCode": {
+    "registrationNotValidated": "Registration not validated",
     "code": "Code",
     "send": "Send",
     "invalidCode": "The code is not valid"

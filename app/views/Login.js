@@ -67,6 +67,9 @@ export default function Login({ route, navigation }) {
     const response = await request(this, LOGIN, { username: username, password: password });
     if (response.httpStatus === 200) {
       replace(navigation, Views.MAIN_STACK)
+    } else if (response.httpStatus === 423) {
+      setLoading(false);
+      navigate(navigation, Views.REGISTER_CODE, { identityNumber: username, login: true, title: strings('registerCode.registrationNotValidated'), message: response.value })
     } else {
       setLoading(false);
       popupAdvice.current.show();

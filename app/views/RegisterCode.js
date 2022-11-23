@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Image, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import CustomScrollView from 'muba-custom-scroll-view';
 import PopupAdvice from 'muba-popup-advice';
@@ -9,16 +9,27 @@ import { validateFields } from '../utils/Validator.js';
 import { REGISTER_CODE, request } from '../utils/APIUtils';
 import { createIconSetFromFontello } from 'react-native-vector-icons';
 import fontelloConfig from '../assets/fonts/config.json';
-import { goBack, navigate, popToTop } from '../utils/Common';
+import { goBack, navigate, popToTop, replace } from '../utils/Common';
 import { Views } from '../utils/Views';
 const FontAwesomeIcon = createIconSetFromFontello(fontelloConfig);
 
 export default function RegisterCode({ route, navigation }) {
   const [isLoading, setLoading] = useState(false);
+  const [title, setTitle] = useState(strings('register.title'))
   const [code, setCode] = useState();
   const [codeError, setCodeError] = useState();
 
   const popupAdvice = useRef();
+
+  const mounted = useRef();
+  useEffect(() => {
+    if (!mounted.current) {
+      if (route.params.title) {
+        setTitle(route.params.title);
+      }
+      mounted.current = true;
+    }
+  });
 
   async function validateForm() {
     setLoading(true);
@@ -41,7 +52,11 @@ export default function RegisterCode({ route, navigation }) {
       setLoading(false);
       popupAdvice.current.show();
     } else {
-      navigate(navigation, Views.LOGIN, { identityNumber: route.params.identityNumber });
+      if (route.params.login) {
+        replace(navigation, Views.MAIN_STACK);
+      } else {
+        navigate(navigation, Views.LOGIN, { identityNumber: route.params.identityNumber });
+      }
     }
   }
 
@@ -59,7 +74,7 @@ export default function RegisterCode({ route, navigation }) {
       <LoadingCursor loading={isLoading} />
       <CustomScrollView style={commonStyles.container}>
         <View style={[loginStyles.loginScreen]}>
-          <Text style={loginStyles.loginContentH1}>{strings('register.title')}</Text>
+          <Text style={loginStyles.loginContentH1}>{title}</Text>
 
           <Text style={[commonStyles.margTop, { textAlign: isRTL() ? 'right' : 'left' }]}>{route.params.message}</Text>
 
@@ -69,6 +84,8 @@ export default function RegisterCode({ route, navigation }) {
               autoFocus={true}
               style={[loginStyles.loginInputText, codeError ? loginStyles.loginInputError : '', { textAlign: isRTL() ? 'right' : 'left', }]}
               onChangeText={text => setCode(text)}
+              maxLength={6}
+              keyboardType='numeric'
               onSubmitEditing={(event) => validateForm()}
               underlineColorAndroid='transparent' />
           </View>

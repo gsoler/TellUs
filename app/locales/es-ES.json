@@ -38,6 +38,7 @@
     "userExists": "El usuario ya existe"
   },
   "registerCode": {
+    "registrationNotValidated": "Registro no validado",
     "code": "Código",
     "send": "Enviar",
     "invalidCode": "El código no es válido"
